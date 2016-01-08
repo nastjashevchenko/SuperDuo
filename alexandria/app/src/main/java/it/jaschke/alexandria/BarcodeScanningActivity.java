@@ -3,7 +3,7 @@ package it.jaschke.alexandria;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -13,7 +13,7 @@ import java.util.Collections;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class BarcodeScanningActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler
+public class BarcodeScanningActivity extends ActionBarActivity implements ZXingScannerView.ResultHandler
 {
     ZXingScannerView scannerView;
 
@@ -33,7 +33,7 @@ public class BarcodeScanningActivity extends AppCompatActivity implements ZXingS
         Intent returnIntent = new Intent();
         // TODO Extra name as constant
         returnIntent.putExtra("EAN", result.getText());
-        setResult(Activity.RESULT_OK,returnIntent);
+        setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
 
