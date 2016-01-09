@@ -11,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import butterknife.Bind;
@@ -29,7 +29,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     @Bind(R.id.listOfBooks) ListView mBookList;
     @Bind(R.id.searchText) EditText mSearchText;
-    @Bind(R.id.searchButton) Button mSearchButton;
+    @Bind(R.id.searchButton) ImageButton mSearchButton;
 
     private final int LOADER_ID = 10;
 

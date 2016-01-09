@@ -16,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -34,15 +36,18 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private final int LOADER_ID = 1;
     private final String EAN_CONTENT="eanContent";
 
+    //TODO Fix layout (portrait and landscape)
+
     @Bind(R.id.bookTitle) TextView mBookTitle;
     @Bind(R.id.bookSubTitle) TextView mBookSubTitle;
     @Bind(R.id.authors) TextView mAuthors;
     @Bind(R.id.categories) TextView mCategories;
     @Bind(R.id.bookCover) ImageView mBookCover;
-    @Bind(R.id.save_button) Button mSaveButton;
-    @Bind(R.id.authors) Button mDeleteButton;
+    @Bind(R.id.save_button) ImageButton mSaveButton;
+    @Bind(R.id.delete_button) ImageButton mDeleteButton;
     @Bind(R.id.ean) EditText mEan;
     @Bind(R.id.scan_button) Button mScanButton;
+    @Bind(R.id.book_container) RelativeLayout mBookContainer;
 
 
     public AddBook(){
@@ -81,7 +86,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     ean = "978" + ean;
                 }
                 if (ean.length() < 13) {
-                    clearFields();
+                    mBookContainer.setVisibility(View.GONE);
                     return;
                 }
                 //Once we have an ISBN, start a book intent
@@ -171,29 +176,16 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
             new DownloadImage(mBookCover).execute(imgUrl);
-            mBookCover.setVisibility(View.VISIBLE);
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         mCategories.setText(categories);
-
-        mSaveButton.setVisibility(View.VISIBLE);
-        mDeleteButton.setVisibility(View.VISIBLE);
+        mBookContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
 
-    }
-
-    private void clearFields(){
-        mBookTitle.setText("");
-        mBookSubTitle.setText("");
-        mAuthors.setText("");
-        mCategories.setText("");
-        mBookCover.setVisibility(View.INVISIBLE);
-        mSaveButton.setVisibility(View.INVISIBLE);
-        mDeleteButton.setVisibility(View.INVISIBLE);
     }
 
     @Override
