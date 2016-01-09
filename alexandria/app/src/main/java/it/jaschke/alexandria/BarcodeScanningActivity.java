@@ -31,8 +31,7 @@ public class BarcodeScanningActivity extends ActionBarActivity implements ZXingS
     @Override
     public void handleResult(Result result) {
         Intent returnIntent = new Intent();
-        // TODO Extra name as constant
-        returnIntent.putExtra("EAN", result.getText());
+        returnIntent.putExtra(AddBook.EAN_EXTRA_NAME, result.getText());
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
