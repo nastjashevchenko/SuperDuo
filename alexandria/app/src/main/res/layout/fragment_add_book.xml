@@ -96,9 +96,11 @@
                 android:layout_height="fill_parent"
                 android:text="@string/cancel_button"
                 android:layout_weight="1"
+                android:contentDescription="@string/cancel_button_desc"
                 style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/delete_button"
                 android:drawableLeft="@drawable/ic_action_discard"
+                android:drawableStart="@drawable/ic_action_discard"
                 />
 
             <ImageButton
@@ -107,7 +109,9 @@
                 android:text="@string/ok_button"
                 android:layout_weight="1"
                 android:id="@+id/save_button"
+                android:contentDescription="@string/save_button_desc"
                 android:drawableLeft="@drawable/ic_action_accept"
+                android:drawableStart="@drawable/ic_action_accept"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_gravity="bottom"
                 />
