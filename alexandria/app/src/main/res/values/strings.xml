@@ -16,7 +16,6 @@
 
     <string name="ok_button">Next</string>
     <string name="cancel_button">Cancel</string>
-    <string name="not_found">No Book found</string>
     <string name="search">Search</string>
     <string name="delete">Delete Book</string>
     <string name="pref_startScreen">Select Startscreen</string>
@@ -28,7 +27,14 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
     The original version of this app was built by Sascha Jaschke, and a modified version is given to students in the Udacity Android Nanodegree program. </string>
-    <string name="title_activity_barcode_scanning">BarcodeScanningActivity</string>
+    <string name="title_activity_barcode_scanning">Barcode Scanning</string>
+
+    <!-- Button descriptions -->
     <string name="cancel_button_desc">Cancel search button</string>
     <string name="save_button_desc">Save book to library and start new search</string>
+
+    <!-- User messages -->
+    <string name="not_found">No Book found</string>
+    <string name="no_connection">Can not find book without Internet. Check connection and try again</string>
+    <string name="bad_server_response">Can not get information for this ISBN, try again later</string>
 </resources>

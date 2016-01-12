@@ -93,6 +93,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
                 bookIntent.putExtra(BookService.EAN, ean);
                 bookIntent.setAction(BookService.FETCH_BOOK);
+                // Fetch book action queries DB for book with given EAN
+                // If no such book in DB yet, it would fetch info via API
                 getActivity().startService(bookIntent);
                 AddBook.this.restartLoader();
             }
@@ -126,7 +128,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
         });
 
-        if(savedInstanceState!=null){
+        if(savedInstanceState != null){
             mEan.setText(savedInstanceState.getString(EAN_CONTENT));
             mEan.setHint("");
         }
@@ -140,12 +142,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if(mEan.getText().length()==0){
+        if(mEan.getText().length() == 0){
             return null;
         }
-        String eanStr= mEan.getText().toString();
-        if(eanStr.length()==10 && !eanStr.startsWith("978")){
-            eanStr="978" + eanStr;
+        String eanStr = mEan.getText().toString();
+        if(eanStr.length() == 10 && !eanStr.startsWith("978")){
+            eanStr = "978" + eanStr;
         }
         return new CursorLoader(
                 getActivity(),
@@ -172,7 +174,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
         String[] authorsArr = authors.split(",");
         mAuthors.setLines(authorsArr.length);
-        mAuthors.setText(authors.replace(",","\n"));
+        mAuthors.setText(authors.replace(",", "\n"));
+
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
             new DownloadImage(mBookCover).execute(imgUrl);

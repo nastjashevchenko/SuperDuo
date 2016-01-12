@@ -93,13 +93,13 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         String searchString = mSearchText.getText().toString();
 
         if(searchString.length()>0){
-            searchString = "%"+searchString+"%";
+            searchString = "%" + searchString + "%";
             return new CursorLoader(
                     getActivity(),
                     AlexandriaContract.BookEntry.CONTENT_URI,
                     null,
                     selection,
-                    new String[]{searchString,searchString},
+                    new String[]{searchString, searchString},
                     null
             );
         }
