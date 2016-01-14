@@ -160,6 +160,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
+    // TODO do not override back button
     public void goBack(View view){
         getSupportFragmentManager().popBackStack();
     }

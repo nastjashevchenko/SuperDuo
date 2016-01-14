@@ -108,11 +108,12 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         mBookTitle.setText(bookTitle);
 
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        // TODO fix crash on orientation change
+        /*Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text)+bookTitle);
-        shareActionProvider.setShareIntent(shareIntent);
+        shareActionProvider.setShareIntent(shareIntent);*/
 
         String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
         mBookSubTitle.setText(bookSubTitle);
@@ -121,9 +122,8 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         mBookDesc.setText(desc);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
-        mAuthors.setLines(authorsArr.length);
-        mAuthors.setText(authors.replace(",", "\n"));
+        mAuthors.setText(String.format(getResources().getString(R.string.authors_placeholder), authors));
+
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
             new DownloadImage(mBookCover).execute(imgUrl);
@@ -133,9 +133,9 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         mCategories.setText(categories);
 
-        if(rootView.findViewById(R.id.right_container)!=null){
+        /*if(rootView.findViewById(R.id.right_container)!=null){
             rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);
-        }
+        }*/
 
     }
 
