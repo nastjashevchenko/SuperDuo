@@ -1,5 +1,7 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
     android:layout_height="match_parent" tools:context="it.jaschke.alexandria.AddBook">
 
     <LinearLayout
@@ -7,9 +9,7 @@
         android:layout_width="wrap_content"
         android:id="@+id/eancontainer"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        android:layout_marginTop="30dp">
 
         <EditText
             android:layout_width="wrap_content"
@@ -21,6 +21,7 @@
             android:maxLength="@integer/ean_size"
             android:maxLines="1"
             android:hint="@string/input_hint"
+            android:paddingEnd="20dp"
             android:paddingRight="20dp"/>
 
         <Button
@@ -33,90 +34,86 @@
 
     <RelativeLayout
         android:id="@+id/book_container"
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal|top"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
         android:visibility="invisible"
-        android:layout_below="@+id/eancontainer">
+        android:background="@color/book_background"
+        android:layout_margin="@dimen/search_result_margin"
+        android:padding="10dp"
+        android:elevation="3dp">
 
-        <TextView
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="70dp"
+            android:id="@+id/bookCover"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
+            android:scaleType="centerCrop"
+            android:paddingTop="10dp"
+            android:contentDescription="@string/book_cover" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/bookInfo"
+            android:layout_gravity="center_vertical"
+            android:layout_toEndOf="@+id/bookCover"
+            android:layout_toRightOf="@+id/bookCover">
+
+            <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/bookTitle"
             android:textSize="@dimen/head_line"
             android:textIsSelectable="true"
-            android:textStyle="bold"
-            android:layout_marginTop="25dp"
-            android:paddingRight="20dp" />
+            android:textStyle="bold"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/bookSubTitle"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/bookTitle"
-            android:maxLines="3"
-            android:ellipsize="end" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bookSubTitle"
+                android:textIsSelectable="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/authors"
-            android:gravity="end"
-            android:textSize="@dimen/small_fontsize"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/bookSubTitle" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/authors"
+                android:textSize="@dimen/small_fontsize" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/bookCover"
-            android:contentDescription="@string/book_cover"
-            android:layout_alignTop="@+id/authors"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/categories"
-            android:textSize="@dimen/small_fontsize"
-            android:layout_below="@+id/bookCover"
-            android:layout_marginTop="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/categories"
+                android:textSize="@dimen/small_fontsize" />
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="50dip"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_below="@+id/bookInfo">
 
-            <ImageButton
+            <Button
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/cancel_button"
                 android:layout_weight="1"
                 android:contentDescription="@string/cancel_button_desc"
-                style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/delete_button"
-                android:drawableLeft="@drawable/ic_action_discard"
-                android:drawableStart="@drawable/ic_action_discard"
-                />
+                style="?android:attr/borderlessButtonStyle" />
 
-            <ImageButton
+            <Button
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/ok_button"
                 android:layout_weight="1"
                 android:id="@+id/save_button"
                 android:contentDescription="@string/save_button_desc"
-                android:drawableLeft="@drawable/ic_action_accept"
-                android:drawableStart="@drawable/ic_action_accept"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_gravity="bottom"
-                />
-
+                style="?android:attr/borderlessButtonStyle"/>
         </LinearLayout>
 
     </RelativeLayout>
-</RelativeLayout>
+</LinearLayout>

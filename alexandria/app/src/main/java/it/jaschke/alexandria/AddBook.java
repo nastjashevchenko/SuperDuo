@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,18 +35,17 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private final int LOADER_ID = 1;
     private final String EAN_CONTENT="eanContent";
 
-    //TODO Fix layout (portrait and landscape)
-
     @Bind(R.id.bookTitle) TextView mBookTitle;
     @Bind(R.id.bookSubTitle) TextView mBookSubTitle;
     @Bind(R.id.authors) TextView mAuthors;
     @Bind(R.id.categories) TextView mCategories;
     @Bind(R.id.bookCover) ImageView mBookCover;
-    @Bind(R.id.save_button) ImageButton mSaveButton;
-    @Bind(R.id.delete_button) ImageButton mDeleteButton;
+    @Bind(R.id.save_button) Button mSaveButton;
+    @Bind(R.id.delete_button) Button mDeleteButton;
     @Bind(R.id.ean) EditText mEan;
     @Bind(R.id.scan_button) Button mScanButton;
-    @Bind(R.id.book_container) RelativeLayout mBookContainer;
+    @Bind(R.id.book_container)
+    RelativeLayout mBookContainer;
 
 
     public AddBook(){
@@ -172,9 +170,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         mBookSubTitle.setText(bookSubTitle);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
-        mAuthors.setLines(authorsArr.length);
-        mAuthors.setText(authors.replace(",", "\n"));
+        mAuthors.setText(String.format(getResources().getString(R.string.authors_placeholder), authors));
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
