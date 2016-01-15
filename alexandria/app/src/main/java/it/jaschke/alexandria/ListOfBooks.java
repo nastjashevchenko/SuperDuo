@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,10 +32,25 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Bind(R.id.listOfBooks) ListView mBookList;
     @Bind(R.id.searchText) EditText mSearchText;
     @Bind(R.id.searchButton) ImageButton mSearchButton;
+    @Bind(R.id.no_results) LinearLayout mEmpty;
+    @Bind(R.id.books_list) RelativeLayout mListOfBooks;
 
     private final int LOADER_ID = 10;
 
     public ListOfBooks() {
+    }
+
+    private void setBooksViewVisibility(boolean isListEmpty) {
+        // Set visibility depending on if we have books in list or not
+        // If there are no books, no reason to show search controls - it is confusing and looks like
+        // search is broken
+        if (isListEmpty) {
+            mEmpty.setVisibility(View.VISIBLE);
+            mListOfBooks.setVisibility(View.GONE);
+        } else {
+            mEmpty.setVisibility(View.GONE);
+            mListOfBooks.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -119,8 +136,10 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
         bookListAdapter.swapCursor(data);
+        // If no books in cursor:
+        // hide list and search button/text field and show message and button to quickly add new books
+        setBooksViewVisibility(data == null || data.getCount() == 0);
         if (position != ListView.INVALID_POSITION) {
             mBookList.smoothScrollToPosition(position);
         }

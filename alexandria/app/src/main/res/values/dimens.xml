@@ -4,6 +4,7 @@
     <integer name="ean_width">8</integer>
     <dimen name="head_line">20sp</dimen>
     <dimen name="small_fontsize">12sp</dimen>
+    <dimen name="mid_fontsize">18sp</dimen>
     <dimen name="search_result_margin">20dp</dimen>
 
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:

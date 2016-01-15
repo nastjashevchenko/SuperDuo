@@ -5,7 +5,7 @@
     <TextView
         android:background="@color/book_background"
         android:layout_margin="20dp"
-        android:textSize="@dimen/head_line"
+        android:textSize="@dimen/mid_fontsize"
         android:padding="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
