@@ -63,19 +63,6 @@
                 android:id="@+id/fullBookDesc"
                 android:ellipsize="end"
                 android:layout_marginTop="10dp" />
-
-            <!--TODO Back button overriding system back
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/back_button"
-                android:id="@+id/backButton"
-                android:onClick="goBack"
-                android:src="@drawable/ic_action_undo"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_gravity="right|top"/-->
-
-
         </LinearLayout>
 
     </ScrollView>
