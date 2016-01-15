@@ -105,12 +105,14 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         mBookTitle.setText(bookTitle);
 
-        // TODO fix crash on orientation change
-        /*Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text)+bookTitle);
-        shareActionProvider.setShareIntent(shareIntent);*/
+        // Fix cash on orientation change
+        if (shareActionProvider != null) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
+            shareActionProvider.setShareIntent(shareIntent);
+        }
 
         String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
         mBookSubTitle.setText(bookSubTitle);
