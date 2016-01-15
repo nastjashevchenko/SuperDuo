@@ -1,13 +1,8 @@
 package it.jaschke.alexandria.data;
 
-/**
- * Created by saj on 22/12/14.
- */
-
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 public class AlexandriaContract{
 
@@ -19,12 +14,12 @@ public class AlexandriaContract{
     public static final String PATH_AUTHORS = "authors";
     public static final String PATH_CATEGORIES = "categories";
 
-    public static final String PATH_FULLBOOK = "fullbook";
+    public static final String PATH_FULL_BOOK = "fullbook";
 
     public static final class BookEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).build();
 
-        public static final Uri FULL_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FULLBOOK).build();
+        public static final Uri FULL_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FULL_BOOK).build();
 
         public static final String CONTENT_TYPE =
                 "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;

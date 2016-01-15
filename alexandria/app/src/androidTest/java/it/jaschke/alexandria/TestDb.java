@@ -11,9 +11,6 @@ import java.util.Set;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.data.DbHelper;
 
-/**
- * Created by saj on 23/12/14.
- */
 public class TestDb extends AndroidTestCase {
     public static final String LOG_TAG = TestDb.class.getSimpleName();
 
@@ -66,9 +63,6 @@ public class TestDb extends AndroidTestCase {
 
         values = getAuthorValues();
 
-
-        retEan = db.insert(AlexandriaContract.AuthorEntry.TABLE_NAME, null, values);
-
         columns = new String[]{
                 AlexandriaContract.AuthorEntry._ID,
                 AlexandriaContract.AuthorEntry.AUTHOR
@@ -88,7 +82,6 @@ public class TestDb extends AndroidTestCase {
         // test category table
 
         values = getCategoryValues();
-        retEan = db.insert(AlexandriaContract.CategoryEntry.TABLE_NAME, null, values);
 
         columns = new String[]{
                 AlexandriaContract.CategoryEntry._ID,

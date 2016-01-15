@@ -28,7 +28,6 @@ import it.jaschke.alexandria.services.DownloadImage;
 
 
 public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
     static final String EAN_EXTRA_NAME = "EAN";
     private final static int BARCODE_SCANNER_INTENT = 101;
 
