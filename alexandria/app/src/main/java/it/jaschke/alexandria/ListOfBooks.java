@@ -37,6 +37,14 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // need to update when getting back after deleting book from detail page
+        // book should not be present in the list
+        restartLoader();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         Cursor cursor = getActivity().getContentResolver().query(
@@ -56,7 +64,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ListOfBooks.this.restartLoader();
+                        restartLoader();
                     }
                 }
         );
