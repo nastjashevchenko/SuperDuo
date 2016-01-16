@@ -6,13 +6,18 @@ Code from initial commit to this repo was provided by Udacity, all following cha
 
 ## Alexandria
 #### Required components ("meets specifications"):
+
 * [x] Alexandria has barcode scanning functionality;
 * [x] Alexandria does not crash while searching for a book without an internet connection;
+
 #### Optional components ("exceeds specifications"):
+
 * [x] Alexandria’s barcode scanning functionality does not require the installation of a separate app on first use;
 * [x] Extra error cases are found, accounted for, and called out in code comments;
 * [x] Strings are all included in the strings.xml file and untranslatable strings have a translatable tag marked to false.
+
 #### Extra error cases and other improvements:
+
 * Deleted Back button on Book detail, which was duplication of functionality (with system Back button) and was inconsistent with other Fragments;
 * Bug fix: List of books was not updated after book is deleted from Book detail page;
 * Bug fix (critical): If change orientation (portrait <-> landscape) while on Book detail page, app crashed;
