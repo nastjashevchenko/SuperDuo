@@ -145,47 +145,47 @@ public class myFetchService extends IntentService {
             JSONArray matches = new JSONObject(JsonData).getJSONArray(FIXTURES);
 
             //ContentValues to be inserted
-            Vector<ContentValues> values = new Vector <ContentValues> (matches.length());
-            for(int i = 0;i < matches.length();i++) {
+            Vector<ContentValues> values = new Vector<ContentValues>(matches.length());
+            for (int i = 0; i < matches.length(); i++) {
                 JSONObject matchData = matches.getJSONObject(i);
                 String league = matchData.getJSONObject(LINKS).getJSONObject(SOCCER_SEASON).
                         getString("href");
-                league = league.replace(SEASON_LINK,"");
+                league = league.replace(SEASON_LINK, "");
                 //This if statement controls which leagues we're interested in the data from.
                 //add leagues here in order to have them be added to the DB.
                 // If you are finding no data in the app, check that this contains all the leagues.
                 // If it doesn't, that can cause an empty DB, bypassing the dummy data routine.
-                if(league.equals(PREMIER_LEAGUE) ||
-                   league.equals(SERIE_A) ||
-                   league.equals(BUNDESLIGA1) ||
-                   league.equals(BUNDESLIGA2) ||
-                   league.equals(PRIMERA_DIVISION)) {
+                if (league.equals(PREMIER_LEAGUE) ||
+                        league.equals(SERIE_A) ||
+                        league.equals(BUNDESLIGA1) ||
+                        league.equals(BUNDESLIGA2) ||
+                        league.equals(PRIMERA_DIVISION)) {
 
                     String matchId = matchData.getJSONObject(LINKS).getJSONObject(SELF)
                             .getString("href").replace(MATCH_LINK, "");
 
-                    if(!isReal){
+                    if (!isReal) {
                         //This if statement changes the match ID of the dummy data so that it all goes into the database
                         matchId = matchId + Integer.toString(i);
                     }
 
-                    String mDate = matchData.getString(MATCH_DATE);
-                    mDate = mDate.substring(0, mDate.indexOf("T"));
+                    String mDateTime = matchData.getString(MATCH_DATE);
+                    String mTime = mDateTime.substring(mDateTime.indexOf("T") + 1, mDateTime.indexOf("Z"));
+                    String mDate = mDateTime.substring(0, mDateTime.indexOf("T"));
 
-                    String mTime = mDate.substring(mDate.indexOf("T") + 1, mDate.indexOf("Z"));
                     SimpleDateFormat matchDate = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
                     matchDate.setTimeZone(TimeZone.getTimeZone("UTC"));
                     try {
-                        Date parseDate = matchDate.parse(mDate+mTime);
-                        SimpleDateFormat new_date = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
-                        new_date.setTimeZone(TimeZone.getDefault());
-                        mDate = new_date.format(parseDate);
+                        Date parseDate = matchDate.parse(mDate + mTime);
+                        SimpleDateFormat newDate = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
+                        newDate.setTimeZone(TimeZone.getDefault());
+                        mDate = newDate.format(parseDate);
                         mTime = mDate.substring(mDate.indexOf(":") + 1);
                         mDate = mDate.substring(0, mDate.indexOf(":"));
 
-                        if(!isReal){
+                        if (!isReal) {
                             //This if statement changes the dummy data's date to match our current date range.
-                            Date fragmentDate = new Date(System.currentTimeMillis()+((i-2)*86400000));
+                            Date fragmentDate = new Date(System.currentTimeMillis() + ((i - 2) * 86400000));
                             SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
                             mDate = mFormat.format(fragmentDate);
                         }
@@ -198,18 +198,19 @@ public class myFetchService extends IntentService {
                     String homeGoals = matchData.getJSONObject(RESULT).getString(HOME_GOALS);
                     String awayGoals = matchData.getJSONObject(RESULT).getString(AWAY_GOALS);
                     String matchDay = matchData.getString(MATCH_DAY);
-                    ContentValues match_values = new ContentValues();
-                    match_values.put(DatabaseContract.scores_table.MATCH_ID, matchId);
-                    match_values.put(DatabaseContract.scores_table.DATE_COL, mDate);
-                    match_values.put(DatabaseContract.scores_table.TIME_COL, mTime);
-                    match_values.put(DatabaseContract.scores_table.HOME_COL, home);
-                    match_values.put(DatabaseContract.scores_table.AWAY_COL, away);
-                    match_values.put(DatabaseContract.scores_table.HOME_GOALS_COL, homeGoals);
-                    match_values.put(DatabaseContract.scores_table.AWAY_GOALS_COL, awayGoals);
-                    match_values.put(DatabaseContract.scores_table.LEAGUE_COL, league);
-                    match_values.put(DatabaseContract.scores_table.MATCH_DAY, matchDay);
 
-                    values.add(match_values);
+                    ContentValues matchValues = new ContentValues();
+                    matchValues.put(DatabaseContract.scores_table.MATCH_ID, matchId);
+                    matchValues.put(DatabaseContract.scores_table.DATE_COL, mDate);
+                    matchValues.put(DatabaseContract.scores_table.TIME_COL, mTime);
+                    matchValues.put(DatabaseContract.scores_table.HOME_COL, home);
+                    matchValues.put(DatabaseContract.scores_table.AWAY_COL, away);
+                    matchValues.put(DatabaseContract.scores_table.HOME_GOALS_COL, homeGoals);
+                    matchValues.put(DatabaseContract.scores_table.AWAY_GOALS_COL, awayGoals);
+                    matchValues.put(DatabaseContract.scores_table.LEAGUE_COL, league);
+                    matchValues.put(DatabaseContract.scores_table.MATCH_DAY, matchDay);
+
+                    values.add(matchValues);
                 }
             }
             ContentValues[] insert_data = new ContentValues[values.size()];
@@ -219,7 +220,6 @@ public class myFetchService extends IntentService {
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage());
         }
-
     }
 }
 
