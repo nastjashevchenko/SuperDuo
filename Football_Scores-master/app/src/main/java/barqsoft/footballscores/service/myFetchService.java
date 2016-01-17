@@ -79,14 +79,14 @@ public class myFetchService extends IntentService {
             }
             jsonData = buffer.toString();
         } catch (Exception e) {
-            Log.e(LOG_TAG,"Exception here" + e.getMessage());
+            Log.e(LOG_TAG,"Exception here " + e.getMessage());
         } finally {
             if (mConnection != null) mConnection.disconnect();
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    Log.e(LOG_TAG,"Error Closing Stream");
+                    Log.e(LOG_TAG, "Error Closing Stream");
                 }
             }
         }
@@ -168,7 +168,7 @@ public class myFetchService extends IntentService {
                         //This if statement changes the match ID of the dummy data so that it all goes into the database
                         matchId = matchId + Integer.toString(i);
                     }
-                    
+
                     String mDateTime = matchData.getString(MATCH_DATE);
                     String mTime = mDateTime.substring(mDateTime.indexOf("T") + 1, mDateTime.indexOf("Z"));
                     String mDate = mDateTime.substring(0, mDateTime.indexOf("T"));

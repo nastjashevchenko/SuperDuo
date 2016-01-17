@@ -11,7 +11,6 @@ public class MainActivity extends ActionBarActivity {
     public static int selected_match_id;
     public static int current_fragment = 2;
     public static String LOG_TAG = "MainActivity";
-    private final String saveTag = "Save Test";
     private PagerFragment myMain;
 
     @Override
@@ -55,8 +54,6 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.v(saveTag, "will save fragment: " + String.valueOf(myMain.mPagerHandler.getCurrentItem()));
-        Log.v(saveTag, "selected id: " + selected_match_id);
         outState.putInt("Pager_Current", myMain.mPagerHandler.getCurrentItem());
         outState.putInt("Selected_match", selected_match_id);
         getSupportFragmentManager().putFragment(outState, "myMain", myMain);
@@ -65,8 +62,6 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.v(saveTag, "will retrieve fragment: " + String.valueOf(savedInstanceState.getInt("Pager_Current")));
-        Log.v(saveTag, "selected id: " + savedInstanceState.getInt("Selected_match"));
         current_fragment = savedInstanceState.getInt("Pager_Current");
         selected_match_id = savedInstanceState.getInt("Selected_match");
         myMain = (PagerFragment) getSupportFragmentManager().getFragment(savedInstanceState, "myMain");
