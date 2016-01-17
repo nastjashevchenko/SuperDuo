@@ -170,16 +170,16 @@ public class myFetchService extends IntentService {
                     }
 
                     String mDate = matchData.getString(MATCH_DATE);
+                    String mTime = mDate.substring(mDate.indexOf("T") + 1, mDate.indexOf("Z"));
                     mDate = mDate.substring(0, mDate.indexOf("T"));
 
-                    String mTime = mDate.substring(mDate.indexOf("T") + 1, mDate.indexOf("Z"));
                     SimpleDateFormat matchDate = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
                     matchDate.setTimeZone(TimeZone.getTimeZone("UTC"));
                     try {
                         Date parseDate = matchDate.parse(mDate+mTime);
-                        SimpleDateFormat new_date = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
-                        new_date.setTimeZone(TimeZone.getDefault());
-                        mDate = new_date.format(parseDate);
+                        SimpleDateFormat newDate = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
+                        newDate.setTimeZone(TimeZone.getDefault());
+                        mDate = newDate.format(parseDate);
                         mTime = mDate.substring(mDate.indexOf(":") + 1);
                         mDate = mDate.substring(0, mDate.indexOf(":"));
 
