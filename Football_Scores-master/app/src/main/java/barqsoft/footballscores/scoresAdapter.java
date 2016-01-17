@@ -37,20 +37,32 @@ public class ScoresAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
         final ViewHolder mHolder = (ViewHolder) view.getTag();
-        mHolder.homeName.setText(cursor.getString(COL_HOME));
-        mHolder.awayName.setText(cursor.getString(COL_AWAY));
-        mHolder.date.setText(cursor.getString(COL_MATCH_TIME));
-        mHolder.score.setText(Utils.getScores(context, cursor.getInt(COL_HOME_GOALS), cursor.getInt(COL_AWAY_GOALS)));
+
+        String home = cursor.getString(COL_HOME);
+        String away = cursor.getString(COL_AWAY);
+        int homeGoals = cursor.getInt(COL_HOME_GOALS);
+        int awayGoals = cursor.getInt(COL_AWAY_GOALS);
+        String time = cursor.getString(COL_MATCH_TIME);
+
+        mHolder.homeName.setText(home);
+        mHolder.awayName.setText(away);
+        mHolder.date.setText(time);
+        mHolder.score.setText(Utils.getScores(context, homeGoals, awayGoals));
         mHolder.matchId = cursor.getDouble(COL_ID);
-        mHolder.homeCrest.setImageResource(Utils.getTeamCrestByTeamName(
-                cursor.getString(COL_HOME)));
-        mHolder.awayCrest.setImageResource(Utils.getTeamCrestByTeamName(
-                cursor.getString(COL_AWAY)
-        ));
+        mHolder.homeCrest.setImageResource(Utils.getTeamCrestByTeamName(home));
+        mHolder.awayCrest.setImageResource(Utils.getTeamCrestByTeamName(away));
+
+        String contentDescription = context.getString(R.string.teams_accessibility_desc,
+                home, away, time);
+        if (homeGoals >= 0 && awayGoals >= 0)
+            contentDescription += context.getString(R.string.score_accessibility_desc,
+                    home, homeGoals, away, awayGoals);
 
         LayoutInflater vi = (LayoutInflater) context.getApplicationContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.detail_fragment, null);
+
+        view.setContentDescription(contentDescription);
         ViewGroup container = (ViewGroup) view.findViewById(R.id.details_fragment_container);
 
         if(mHolder.matchId == detailMatchId) {
