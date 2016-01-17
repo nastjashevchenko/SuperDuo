@@ -81,7 +81,7 @@ public class myFetchService extends IntentService {
         } catch (Exception e) {
             Log.e(LOG_TAG,"Exception here" + e.getMessage());
         } finally {
-            if(mConnection != null) mConnection.disconnect();
+            if (mConnection != null) mConnection.disconnect();
             if (reader != null) {
                 try {
                     reader.close();
@@ -106,7 +106,7 @@ public class myFetchService extends IntentService {
                 Log.d(LOG_TAG, "Could not connect to server.");
             }
         } catch(Exception e) {
-            Log.e(LOG_TAG,e.getMessage());
+            Log.e(LOG_TAG, e.getMessage());
         }
     }
 
@@ -198,18 +198,18 @@ public class myFetchService extends IntentService {
                     String homeGoals = matchData.getJSONObject(RESULT).getString(HOME_GOALS);
                     String awayGoals = matchData.getJSONObject(RESULT).getString(AWAY_GOALS);
                     String matchDay = matchData.getString(MATCH_DAY);
-                    ContentValues match_values = new ContentValues();
-                    match_values.put(DatabaseContract.scores_table.MATCH_ID, matchId);
-                    match_values.put(DatabaseContract.scores_table.DATE_COL, mDate);
-                    match_values.put(DatabaseContract.scores_table.TIME_COL, mTime);
-                    match_values.put(DatabaseContract.scores_table.HOME_COL, home);
-                    match_values.put(DatabaseContract.scores_table.AWAY_COL, away);
-                    match_values.put(DatabaseContract.scores_table.HOME_GOALS_COL, homeGoals);
-                    match_values.put(DatabaseContract.scores_table.AWAY_GOALS_COL, awayGoals);
-                    match_values.put(DatabaseContract.scores_table.LEAGUE_COL, league);
-                    match_values.put(DatabaseContract.scores_table.MATCH_DAY, matchDay);
+                    ContentValues matchValues = new ContentValues();
+                    matchValues.put(DatabaseContract.scores_table.MATCH_ID, matchId);
+                    matchValues.put(DatabaseContract.scores_table.DATE_COL, mDate);
+                    matchValues.put(DatabaseContract.scores_table.TIME_COL, mTime);
+                    matchValues.put(DatabaseContract.scores_table.HOME_COL, home);
+                    matchValues.put(DatabaseContract.scores_table.AWAY_COL, away);
+                    matchValues.put(DatabaseContract.scores_table.HOME_GOALS_COL, homeGoals);
+                    matchValues.put(DatabaseContract.scores_table.AWAY_GOALS_COL, awayGoals);
+                    matchValues.put(DatabaseContract.scores_table.LEAGUE_COL, league);
+                    matchValues.put(DatabaseContract.scores_table.MATCH_DAY, matchDay);
 
-                    values.add(match_values);
+                    values.add(matchValues);
                 }
             }
             ContentValues[] insert_data = new ContentValues[values.size()];
@@ -222,4 +222,3 @@ public class myFetchService extends IntentService {
 
     }
 }
-

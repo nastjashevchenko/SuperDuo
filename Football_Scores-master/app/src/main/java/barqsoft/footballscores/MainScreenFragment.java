@@ -1,8 +1,12 @@
 package barqsoft.footballscores;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -12,25 +16,45 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import barqsoft.footballscores.service.myFetchService;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainScreenFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainScreenFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        ActivityCompat.OnRequestPermissionsResultCallback {
     public ScoresAdapter mAdapter;
     public static final int SCORES_LOADER = 0;
     private String fragmentDate;
 
-    private static final int PERMISSIONS_REQUEST_INTERNET = 1;
+    private static final int REQUEST_INTERNET = 1;
 
     public MainScreenFragment() {
     }
 
-    private void updateScores() {
-        Intent service_start = new Intent(getActivity(), myFetchService.class);
-        getActivity().startService(service_start);
+    public void updateScores() {
+        Intent serviceStart = new Intent(getActivity(), myFetchService.class);
+        getActivity().startService(serviceStart);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        if (requestCode == REQUEST_INTERNET) {
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                updateScores();
+            } else {
+                Toast noPermisson = new Toast(getContext());
+                noPermisson.setText(R.string.no_internet_permission);
+                noPermisson.show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     public void setFragmentDate(String date) {
@@ -38,10 +62,22 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
 
-        updateScores();
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.INTERNET},
+                    REQUEST_INTERNET);
+        } else {
+            updateScores();
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final ListView scoreList = (ListView) rootView.findViewById(R.id.scores_list);
         mAdapter = new ScoresAdapter(getActivity(), null, 0);
@@ -72,8 +108,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader)
-    {
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mAdapter.swapCursor(null);
     }
 
