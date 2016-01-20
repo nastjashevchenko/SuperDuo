@@ -1,19 +1,17 @@
 package barqsoft.footballscores.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+import barqsoft.footballscores.MainActivity;
 import barqsoft.footballscores.R;
 
 public class CollectionWidgetProvider extends AppWidgetProvider {
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-    }
+    public static final String EXTRA_POSITION = "com.dharmangsoni.widgets.EXTRA_POSITION";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
@@ -23,11 +21,13 @@ public class CollectionWidgetProvider extends AppWidgetProvider {
                     R.layout.collection_widget_layout);
 
             Intent intent = new Intent(context, CollectionWidgetService.class);
-            //intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-            //intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-
             mView.setRemoteAdapter(widgetId, R.id.widget_collection_list, intent);
             mView.setEmptyView(R.id.widget_collection_list, android.R.id.empty);
+
+            Intent clickIntentTemplate = new Intent(context, MainActivity.class);
+            PendingIntent clickPendingIntentTemplate = PendingIntent.getActivity(context, 0,
+                    clickIntentTemplate, PendingIntent.FLAG_UPDATE_CURRENT);
+            mView.setPendingIntentTemplate(R.id.widget_collection_list, clickPendingIntentTemplate);
 
             appWidgetManager.updateAppWidget(widgetId, mView);
         }

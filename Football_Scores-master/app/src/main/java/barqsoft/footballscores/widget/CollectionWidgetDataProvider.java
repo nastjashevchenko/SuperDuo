@@ -52,6 +52,10 @@ public class CollectionWidgetDataProvider implements RemoteViewsService.RemoteVi
         mView.setTextViewText(R.id.away_name, away);
         mView.setTextViewText(R.id.score_textview, Utils.getScores(mContext, homeGoals, awayGoals));
 
+        final Intent fillInIntent = new Intent();
+        fillInIntent.putExtra(CollectionWidgetProvider.EXTRA_POSITION, position);
+        mView.setOnClickFillInIntent(R.id.match_item, fillInIntent);
+
         return mView;
     }
 
