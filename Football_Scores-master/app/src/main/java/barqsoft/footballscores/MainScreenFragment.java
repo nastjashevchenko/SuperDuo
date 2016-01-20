@@ -80,6 +80,8 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final ListView scoreList = (ListView) rootView.findViewById(R.id.scores_list);
+        scoreList.setEmptyView(rootView.findViewById(R.id.empty_list_view));
+
         mAdapter = new ScoresAdapter(getActivity(), null, 0);
         scoreList.setAdapter(mAdapter);
         getLoaderManager().initLoader(SCORES_LOADER, null, this);

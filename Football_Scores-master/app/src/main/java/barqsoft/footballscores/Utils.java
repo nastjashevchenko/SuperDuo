@@ -40,11 +40,9 @@ public class Utils {
     }
 
     public static String getScores(Context c, int homeGoals, int awayGoals) {
-        if(homeGoals < 0 || awayGoals < 0) {
-            return c.getString(R.string.score_separator);
-        } else {
-            return String.valueOf(homeGoals) + c.getString(R.string.score_separator) + String.valueOf(awayGoals);
-        }
+        String homeGoalsStr = homeGoals < 0 ? "?" : String.valueOf(homeGoals);
+        String awayGoalsStr = awayGoals < 0 ? "?" : String.valueOf(awayGoals);
+        return c.getString(R.string.score_template, homeGoalsStr, awayGoalsStr);
     }
 
     public static int getTeamCrestByTeamName (String teamName) {

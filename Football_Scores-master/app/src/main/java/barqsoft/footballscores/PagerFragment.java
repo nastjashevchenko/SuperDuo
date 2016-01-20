@@ -29,7 +29,7 @@ public class PagerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.pager_fragment, container, false);
         mPagerHandler = (ViewPager) rootView.findViewById(R.id.pager);
         mPagerAdapter = new myPageAdapter(getChildFragmentManager());
-        for (int i = 0;i < NUM_PAGES;i++)
+        for (int i = 0; i < NUM_PAGES; i++)
         {
             Date fragmentDate = new Date(System.currentTimeMillis()+((i-2)*86400000));
             SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
