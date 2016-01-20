@@ -47,13 +47,14 @@ public class CollectionWidgetDataProvider implements RemoteViewsService.RemoteVi
         String away = cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_COL));
         int homeGoals = cursor.getInt(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_GOALS_COL));
         int awayGoals = cursor.getInt(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_GOALS_COL));
+        int matchId = cursor.getInt(cursor.getColumnIndex(DatabaseContract.scores_table.MATCH_ID));
 
         mView.setTextViewText(R.id.home_name, home);
         mView.setTextViewText(R.id.away_name, away);
         mView.setTextViewText(R.id.score_textview, Utils.getScores(mContext, homeGoals, awayGoals));
 
         final Intent fillInIntent = new Intent();
-        fillInIntent.putExtra(CollectionWidgetProvider.EXTRA_POSITION, position);
+        fillInIntent.putExtra(CollectionWidgetProvider.EXTRA_POSITION, matchId);
         mView.setOnClickFillInIntent(R.id.match_item, fillInIntent);
 
         return mView;
@@ -84,7 +85,8 @@ public class CollectionWidgetDataProvider implements RemoteViewsService.RemoteVi
                 DatabaseContract.scores_table.HOME_COL,
                 DatabaseContract.scores_table.AWAY_COL,
                 DatabaseContract.scores_table.HOME_GOALS_COL,
-                DatabaseContract.scores_table.AWAY_GOALS_COL
+                DatabaseContract.scores_table.AWAY_GOALS_COL,
+                DatabaseContract.scores_table.MATCH_ID
         };
         Uri dateUri = DatabaseContract.scores_table.buildScoreWithDate();
         cursor = mContext.getContentResolver().query(dateUri,

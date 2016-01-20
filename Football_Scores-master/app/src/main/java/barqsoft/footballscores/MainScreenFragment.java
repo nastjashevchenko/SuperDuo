@@ -85,6 +85,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         mAdapter = new ScoresAdapter(getActivity(), null, 0);
         scoreList.setAdapter(mAdapter);
         getLoaderManager().initLoader(SCORES_LOADER, null, this);
+
         mAdapter.detailMatchId = MainActivity.selected_match_id;
         scoreList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

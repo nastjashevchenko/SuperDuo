@@ -7,17 +7,25 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import barqsoft.footballscores.widget.CollectionWidgetProvider;
+
 public class MainActivity extends ActionBarActivity {
     public static int selected_match_id;
     public static int current_fragment = 2;
     public static String LOG_TAG = "MainActivity";
     private PagerFragment myMain;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(LOG_TAG, "Reached MainActivity onCreate");
+
+        intent = getIntent();
+        if (intent != null && intent.getExtras() != null) {
+            selected_match_id = intent.getExtras().getInt(CollectionWidgetProvider.EXTRA_POSITION);
+        }
 
         if (savedInstanceState == null) {
             myMain = new PagerFragment();
