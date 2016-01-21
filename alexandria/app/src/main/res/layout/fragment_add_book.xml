@@ -18,7 +18,6 @@
             android:minEms="@integer/ean_width"
             android:id="@+id/ean"
             android:saveEnabled="true"
-            android:maxLength="@integer/ean_size"
             android:maxLines="1"
             android:hint="@string/input_hint"
             android:paddingLeft="20dp"

@@ -74,11 +74,16 @@ public class AddBook extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String ean = s.toString();
-                //catch isbn10 numbers
-                if (ean.length() == 10 && !ean.startsWith("978")) {
-                    ean = "978" + ean;
-                }
+                // If we accept > 13 chars and allow dashes, user can copy/paste ISBNs
+                // It is ok to allow put > 13 digits, it should not affect search
+                String ean = s.toString().replace("-", "");
+
+                // Removed catching isbn10
+                // Catching isbn10 numbers logic was not correct. From many examples _real_ isbn10
+                // for the book is not the same as isbn13 without "978" prefix
+                // It would be ok to allow user fill in shorter version (with no prefix), but nobody
+                // would do so, because how one can figure it out? Hint asks for 13 digit code.
+
                 if (ean.length() < 13) {
                     mBookContainer.setVisibility(View.GONE);
                     return;

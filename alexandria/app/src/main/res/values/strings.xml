@@ -11,7 +11,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="scan_button">Scan</string>
-    <string name="input_hint">Insert ISBN-13. Digits only.</string>
+    <string name="input_hint">Insert ISBN-13. Digits and dashes OK.</string>
 
     <string name="ok_button">Save book</string>
     <string name="cancel_button">New search</string>
@@ -41,7 +41,7 @@
     <string name="no_connection">Can not find book without Internet. Check connection and try again</string>
     <string name="bad_server_response">Can not get information for this ISBN, try again later</string>
     <string name="no_books_yet">Your list of books is empty</string>
-    <string name="book_saved_message">Book was saved to list. You can start new search now.</string>
+    <string name="book_saved_message">Book was saved to list. You can start new search.</string>
     <string name="snack_deleted_book">Book is deleted!</string>
     <string name="snack_restored_book">Book is restored!</string>
     <string name="snack_undo">UNDO</string>
