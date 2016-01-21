@@ -42,4 +42,7 @@
     <string name="bad_server_response">Can not get information for this ISBN, try again later</string>
     <string name="no_books_yet">Your list of books is empty</string>
     <string name="book_saved_message">Book was saved to list. You can start new search now.</string>
+    <string name="snack_deleted_book">Book is deleted!</string>
+    <string name="snack_restored_book">Book is restored!</string>
+    <string name="snack_undo">UNDO</string>
 </resources>

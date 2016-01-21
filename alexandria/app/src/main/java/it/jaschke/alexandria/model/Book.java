@@ -2,6 +2,7 @@ package it.jaschke.alexandria.model;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -27,6 +28,20 @@ public class Book implements Parcelable {
         this.imgUrl = imgUrl;
     }
 
+    public Book(String ean, Cursor data) {
+        this.ean = ean;
+        this.title = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
+        this.subtitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
+        this.desc = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC));
+        this.imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
+
+        String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
+        String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
+
+        if (authors != null) this.setAuthors(authors);
+        if (categories != null) this.setCategories(categories);
+    }
+
     public void setAuthors(String[] authors) {
         this.authors = authors;
     }
@@ -49,6 +64,10 @@ public class Book implements Parcelable {
 
     public boolean hasCategories() {
         return this.categories != null && this.categories.length > 0;
+    }
+
+    public String getEan() {
+        return ean;
     }
 
     public String getTitle() {

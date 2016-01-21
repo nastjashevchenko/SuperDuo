@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.model.Book;
+import it.jaschke.alexandria.services.BookService;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
@@ -35,8 +37,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     public static boolean IS_TABLET = false;
     private BroadcastReceiver messageReceiver;
     public static Book mBook;
+    public Fragment mCurrentFragment;
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
+    public static final String DELETE_EVENT = "DELETE_EVENT";
+    public static final String SAVE_EVENT = "SAVE_EVENT";
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
     public static final String BOOK_KEY = "BOOK_EXTRA";
     public static final String BOOK_SAVED = "BOOK_SAVED";
@@ -52,8 +57,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
 
         messageReceiver = new MessageReceiver();
-        IntentFilter filter = new IntentFilter(MESSAGE_EVENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver,filter);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MESSAGE_EVENT);
+        filter.addAction(DELETE_EVENT);
+        filter.addAction(SAVE_EVENT);
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
 
         navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -165,17 +173,45 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     private class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getStringExtra(MESSAGE_KEY) != null){
-                Toast.makeText(MainActivity.this, intent.getStringExtra(MESSAGE_KEY), Toast.LENGTH_LONG).show();
-            }
-            if(intent.getParcelableExtra(BOOK_KEY) != null){
-                mBook = intent.getParcelableExtra(BOOK_KEY);
-                boolean isSaved = intent.getBooleanExtra(BOOK_SAVED, false);
-                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
-                if (currentFragment instanceof AddBook) {
-                    AddBook fragment = (AddBook) currentFragment;
-                    fragment.showBookInfo(mBook, isSaved);
+            mCurrentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+            if (intent.getAction().equals(MESSAGE_EVENT)) {
+                if (intent.getStringExtra(MESSAGE_KEY) != null) {
+                    Toast.makeText(getApplicationContext(),
+                            intent.getStringExtra(MESSAGE_KEY), Toast.LENGTH_LONG).show();
                 }
+                if (intent.getParcelableExtra(BOOK_KEY) != null) {
+                    mBook = intent.getParcelableExtra(BOOK_KEY);
+                    boolean isSaved = intent.getBooleanExtra(BOOK_SAVED, false);
+                    if (mCurrentFragment instanceof AddBook) {
+                        AddBook fragment = (AddBook) mCurrentFragment;
+                        fragment.showBookInfo(mBook, isSaved);
+                    }
+                }
+            } else if (intent.getAction().equals(SAVE_EVENT)) {
+                if (MainActivity.this.mCurrentFragment instanceof ListOfBooks) {
+                    ListOfBooks fragment = (ListOfBooks) MainActivity.this.mCurrentFragment;
+                    fragment.restartLoader();
+                }
+            } else if (intent.getAction().equals(DELETE_EVENT)) {
+                // When book was deleted, we immediately delete it from DB, but store in variable
+                // Snackbar with UNDO button will be shown on receive delete book event
+                // If user hits UNDO, book from variable will be added back to DB and list of books
+                mBook = intent.getParcelableExtra(BOOK_KEY);
+                Snackbar deleted = Snackbar.make(findViewById(R.id.coordinator_layout),
+                        R.string.snack_deleted_book, Snackbar.LENGTH_LONG);
+                deleted.setAction(R.string.snack_undo, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar restored = Snackbar.make(findViewById(R.id.coordinator_layout),
+                                R.string.snack_restored_book, Snackbar.LENGTH_SHORT);
+                        restored.show();
+                        Intent bookIntent = new Intent(getApplicationContext(), BookService.class);
+                        bookIntent.putExtra(MainActivity.BOOK_KEY, mBook);
+                        bookIntent.setAction(BookService.SAVE_BOOK);
+                        getApplicationContext().startService(bookIntent);
+                    }
+                });
+                deleted.show();
             }
         }
     }

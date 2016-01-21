@@ -57,7 +57,7 @@ public class BookService extends IntentService {
             } else if (SAVE_BOOK.equals(action)) {
                 saveBook(book);
             } else if (DELETE_BOOK.equals(action)) {
-                deleteBook(ean);
+                deleteBook(book);
             }
         }
     }
@@ -86,13 +86,28 @@ public class BookService extends IntentService {
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(bookIntent);
     }
 
+    private void sendDeleted(Book book) {
+        Intent bookIntent = new Intent(MainActivity.DELETE_EVENT);
+        bookIntent.putExtra(MainActivity.BOOK_KEY, book);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(bookIntent);
+    }
+
+    private void sendSaved() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).
+                sendBroadcast(new Intent(MainActivity.SAVE_EVENT));
+    }
+
     /**
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private void deleteBook(String ean) {
-        if(ean != null) {
-            getContentResolver().delete(AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)), null, null);
+    private void deleteBook(Book book) {
+        String ean = null;
+        if (book != null) ean = book.getEan();
+        if (ean != null) {
+            getContentResolver().delete(
+                    AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)), null, null);
+            sendDeleted(book);
         }
     }
 
@@ -100,6 +115,7 @@ public class BookService extends IntentService {
         book.writeBackBook(getContentResolver());
         if (book.hasAuthors()) book.writeBackAuthors(getContentResolver());
         if (book.hasCategories()) book.writeBackCategories(getContentResolver());
+        sendSaved();
     }
 
     /**
@@ -122,18 +138,8 @@ public class BookService extends IntentService {
         );
 
         if(bookEntry != null && bookEntry.moveToFirst()){
-            String title = bookEntry.getString(bookEntry.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
-            String subtitle = bookEntry.getString(bookEntry.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
-            String desc = bookEntry.getString(bookEntry.getColumnIndex(AlexandriaContract.BookEntry.DESC));
-            String authors = bookEntry.getString(bookEntry.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-            String imgUrl = bookEntry.getString(bookEntry.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-            String categories = bookEntry.getString(bookEntry.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-
-            Book book = new Book(ean, title, subtitle, desc, imgUrl);
-            if (authors != null) book.setAuthors(authors);
-            if (categories != null) book.setCategories(categories);
+            Book book = new Book(ean, bookEntry);
             sendBook(book, true);
-
             bookEntry.close();
             return;
         }

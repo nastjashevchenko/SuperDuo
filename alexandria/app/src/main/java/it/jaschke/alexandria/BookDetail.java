@@ -22,6 +22,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import it.jaschke.alexandria.data.AlexandriaContract;
+import it.jaschke.alexandria.model.Book;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
 
@@ -33,6 +34,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     private View rootView;
     private String ean;
     private ShareActionProvider shareActionProvider;
+    private Book mBook;
 
     @Bind(R.id.fullBookTitle) TextView mBookTitle;
     @Bind(R.id.fullBookSubTitle) TextView mBookSubTitle;
@@ -67,7 +69,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
             @Override
             public void onClick(View view) {
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean);
+                bookIntent.putExtra(MainActivity.BOOK_KEY, mBook);
                 bookIntent.setAction(BookService.DELETE_BOOK);
                 getActivity().startService(bookIntent);
                 getActivity().getSupportFragmentManager().popBackStack();
@@ -79,7 +81,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.book_detail, menu);
-
         MenuItem menuItem = menu.findItem(R.id.action_share);
         shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
     }
@@ -102,35 +103,30 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
             return;
         }
 
-        String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
-        mBookTitle.setText(bookTitle);
+        mBook = new Book(ean, data);
+        mBookTitle.setText(mBook.getTitle());
 
-        // Fix cash on orientation change
+        // Fix crash on orientation change
         if (shareActionProvider != null) {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
             shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + mBook.getTitle());
             shareActionProvider.setShareIntent(shareIntent);
         }
+        mBookSubTitle.setText(mBook.getSubtitle());
+        mBookDesc.setText(mBook.getDesc());
 
-        String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
-        mBookSubTitle.setText(bookSubTitle);
+        String authors = (mBook.getAuthorsStr() != null && mBook.getAuthorsStr().length() > 0)
+                ? String.format(getResources().getString(R.string.authors_placeholder),
+                mBook.getAuthorsStr()) : "";
+        mAuthors.setText(authors);
 
-        String desc = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC));
-        mBookDesc.setText(desc);
-
-        String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        if (authors != null) mAuthors.setText(String.format(getResources().getString(R.string.authors_placeholder), authors));
-
-        String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-            new DownloadImage(mBookCover).execute(imgUrl);
+        if(Patterns.WEB_URL.matcher(mBook.getImgUrl()).matches()){
+            new DownloadImage(mBookCover).execute(mBook.getImgUrl());
             mBookCover.setVisibility(View.VISIBLE);
         }
-
-        String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        mCategories.setText(categories);
+        mCategories.setText(mBook.getCategoriesStr());
     }
 
     @Override
