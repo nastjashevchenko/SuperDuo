@@ -34,6 +34,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Bind(R.id.searchButton) ImageButton mSearchButton;
     @Bind(R.id.no_results) LinearLayout mEmpty;
     @Bind(R.id.books_list) RelativeLayout mListOfBooks;
+    @Bind(R.id.clearButton) ImageButton mClearButton;
 
     private final int LOADER_ID = 10;
 
@@ -81,6 +82,16 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        restartLoader();
+                    }
+                }
+        );
+
+        mClearButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mSearchText.setText("");
                         restartLoader();
                     }
                 }
