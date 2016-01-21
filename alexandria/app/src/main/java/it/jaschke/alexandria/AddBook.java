@@ -3,11 +3,8 @@ package it.jaschke.alexandria;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -19,19 +16,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import it.jaschke.alexandria.data.AlexandriaContract;
+import it.jaschke.alexandria.model.Book;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
 
 
-public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddBook extends Fragment {
     static final String EAN_EXTRA_NAME = "EAN";
     private final static int BARCODE_SCANNER_INTENT = 101;
 
-    private final int LOADER_ID = 1;
     private final String EAN_CONTENT="eanContent";
 
     @Bind(R.id.bookTitle) TextView mBookTitle;
@@ -53,7 +50,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(mEan !=null) {
+        if(mEan != null) {
             outState.putString(EAN_CONTENT, mEan.getText().toString());
         }
     }
@@ -87,13 +84,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     return;
                 }
                 //Once we have an ISBN, start a book intent
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean);
-                bookIntent.setAction(BookService.FETCH_BOOK);
-                // Fetch book action queries DB for book with given EAN
-                // If no such book in DB yet, it would fetch info via API
-                getActivity().startService(bookIntent);
-                AddBook.this.restartLoader();
+                if(ean.length() == 13){
+                    Intent bookIntent = new Intent(getActivity(), BookService.class);
+                    bookIntent.putExtra(BookService.EAN, ean);
+                    bookIntent.setAction(BookService.FETCH_BOOK);
+                    // Fetch book action queries DB for book with given EAN
+                    // If no such book in DB yet, it would fetch info via API
+                    // Service already run loader, no need to rerun it again, better pass results from service
+                    getActivity().startService(bookIntent);
+                }
             }
         });
 
@@ -101,7 +100,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             @Override
             public void onClick(View v) {
                 Context context = getActivity();
-
                 Intent barcodeScanner = new Intent(context, BarcodeScanningActivity.class);
                 startActivityForResult(barcodeScanner, BARCODE_SCANNER_INTENT);
             }
@@ -110,17 +108,23 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // On save we add this book to DB
+                Intent bookIntent = new Intent(getActivity(), BookService.class);
+                bookIntent.putExtra(MainActivity.BOOK_KEY, MainActivity.mBook);
+                bookIntent.setAction(BookService.SAVE_BOOK);
+                getActivity().startService(bookIntent);
                 mEan.setText("");
+
+                Toast bookSaved = Toast.makeText(getContext(), R.string.book_saved_message,
+                        Toast.LENGTH_SHORT);
+                bookSaved.show();
             }
         });
 
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, mEan.getText().toString());
-                bookIntent.setAction(BookService.DELETE_BOOK);
-                getActivity().startService(bookIntent);
+                // If user decided not to save, but start new search, we just empty fields
                 mEan.setText("");
             }
         });
@@ -131,59 +135,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         }
 
         return rootView;
-    }
-
-    private void restartLoader(){
-        getLoaderManager().restartLoader(LOADER_ID, null, this);
-    }
-
-    @Override
-    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if(mEan.getText().length() == 0){
-            return null;
-        }
-        String eanStr = mEan.getText().toString();
-        if(eanStr.length() == 10 && !eanStr.startsWith("978")){
-            eanStr = "978" + eanStr;
-        }
-        return new CursorLoader(
-                getActivity(),
-                AlexandriaContract.BookEntry.buildFullBookUri(Long.parseLong(eanStr)),
-                null,
-                null,
-                null,
-                null
-        );
-    }
-
-    @Override
-    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst()) {
-            return;
-        }
-
-        String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
-        mBookTitle.setText(bookTitle);
-
-        String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
-        mBookSubTitle.setText(bookSubTitle);
-
-        String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        mAuthors.setText(String.format(getResources().getString(R.string.authors_placeholder), authors));
-
-        String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-            new DownloadImage(mBookCover).execute(imgUrl);
-        }
-
-        String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        mCategories.setText(categories);
-        mBookContainer.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-
     }
 
     @Override
@@ -200,5 +151,19 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 mEan.setText(data.getStringExtra(EAN_EXTRA_NAME));
             }
         }
+    }
+
+    public void showBookInfo(Book book, boolean isSaved) {
+        mBookTitle.setText(book.getTitle());
+        mBookSubTitle.setText(book.getSubtitle());
+        mAuthors.setText(String.format(getResources().getString(R.string.authors_placeholder),
+                book.getAuthorsStr()));
+        String imgUrl = book.getImgUrl();
+        if(Patterns.WEB_URL.matcher(imgUrl).matches()){
+            new DownloadImage(mBookCover).execute(imgUrl);
+        }
+        mCategories.setText(book.getCategoriesStr());
+        mBookContainer.setVisibility(View.VISIBLE);
+        mSaveButton.setEnabled(!isSaved);
     }
 }

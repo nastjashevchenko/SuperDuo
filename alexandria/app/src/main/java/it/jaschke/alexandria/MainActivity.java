@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
+import it.jaschke.alexandria.model.Book;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
@@ -33,9 +34,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     private CharSequence title;
     public static boolean IS_TABLET = false;
     private BroadcastReceiver messageReceiver;
+    public static Book mBook;
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
+    public static final String BOOK_KEY = "BOOK_EXTRA";
+    public static final String BOOK_SAVED = "BOOK_SAVED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +168,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             if(intent.getStringExtra(MESSAGE_KEY) != null){
                 Toast.makeText(MainActivity.this, intent.getStringExtra(MESSAGE_KEY), Toast.LENGTH_LONG).show();
             }
+            if(intent.getParcelableExtra(BOOK_KEY) != null){
+                mBook = intent.getParcelableExtra(BOOK_KEY);
+                boolean isSaved = intent.getBooleanExtra(BOOK_SAVED, false);
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+                if (currentFragment instanceof AddBook) {
+                    AddBook fragment = (AddBook) currentFragment;
+                    fragment.showBookInfo(mBook, isSaved);
+                }
+            }
         }
     }
 
@@ -180,6 +193,4 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
         super.onBackPressed();
     }
-
-
 }
