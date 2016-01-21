@@ -40,8 +40,8 @@ public class AddBook extends Fragment {
     @Bind(R.id.delete_button) Button mDeleteButton;
     @Bind(R.id.ean) EditText mEan;
     @Bind(R.id.scan_button) Button mScanButton;
-    @Bind(R.id.book_container)
-    RelativeLayout mBookContainer;
+    @Bind(R.id.book_container) RelativeLayout mBookContainer;
+    boolean mIsSaved;
 
 
     public AddBook(){
@@ -108,13 +108,15 @@ public class AddBook extends Fragment {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // On save we add this book to DB
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(MainActivity.BOOK_KEY, MainActivity.mBook);
-                bookIntent.setAction(BookService.SAVE_BOOK);
-                getActivity().startService(bookIntent);
-                mEan.setText("");
+                // On save we add this book to DB, if book was not saved previously
+                if (!mIsSaved) {
+                    Intent bookIntent = new Intent(getActivity(), BookService.class);
+                    bookIntent.putExtra(MainActivity.BOOK_KEY, MainActivity.mBook);
+                    bookIntent.setAction(BookService.SAVE_BOOK);
+                    getActivity().startService(bookIntent);
+                }
 
+                mEan.setText("");
                 Toast bookSaved = Toast.makeText(getContext(), R.string.book_saved_message,
                         Toast.LENGTH_SHORT);
                 bookSaved.show();
@@ -156,14 +158,20 @@ public class AddBook extends Fragment {
     public void showBookInfo(Book book, boolean isSaved) {
         mBookTitle.setText(book.getTitle());
         mBookSubTitle.setText(book.getSubtitle());
-        mAuthors.setText(String.format(getResources().getString(R.string.authors_placeholder),
-                book.getAuthorsStr()));
+        // Book can have no authors, then can not use placeholder
+        String authors = (book.getAuthorsStr() != null && book.getAuthorsStr().length() > 0)
+                ? String.format(getResources().getString(R.string.authors_placeholder),
+                book.getAuthorsStr()) : "";
+        mAuthors.setText(authors);
+        // Delete previous image in case new book doesn't have cover
+        mBookCover.setVisibility(View.GONE);
         String imgUrl = book.getImgUrl();
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
             new DownloadImage(mBookCover).execute(imgUrl);
+            mBookCover.setVisibility(View.VISIBLE);
         }
         mCategories.setText(book.getCategoriesStr());
         mBookContainer.setVisibility(View.VISIBLE);
-        mSaveButton.setEnabled(!isSaved);
+        mIsSaved = isSaved;
     }
 }

@@ -130,8 +130,8 @@ public class BookService extends IntentService {
             String categories = bookEntry.getString(bookEntry.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
 
             Book book = new Book(ean, title, subtitle, desc, imgUrl);
-            book.setAuthors(authors);
-            book.setCategories(categories);
+            if (authors != null) book.setAuthors(authors);
+            if (categories != null) book.setCategories(categories);
             sendBook(book, true);
 
             bookEntry.close();
