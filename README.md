@@ -29,10 +29,10 @@ Code from initial commit to this repo was provided by Udacity, all following cha
 * UX fix: If list of books is empty, we should not show search view, because when user tries to search he/she sees that nothing happens and it looks like search is broken. It is not obvious
 that it searches only among already added books. Also, as far as in that case this page is deadlock, now app suggests to go to Add/Scan page (by showing button which opens that Fragment);
 * Layout changes:
-** Book detail: Use LinearLayout instead of nested Relative/LinearLayouts which is more optimal and in case book doesn't have information for some fields (empty desc, empty subtitle etc.) layout looks better, doesn't have a lot of void space between views;
-** Add/Scan book: Created container for book info to hide/show one view, not every view;
-** Add/Scan book: New layout looks more compact and easy to read;
-** About app: Added paddings and changed text (according to existed TODO);
+  * Book detail: Use LinearLayout instead of nested Relative/LinearLayouts which is more optimal and in case book doesn't have information for some fields (empty desc, empty subtitle etc.) layout looks better, doesn't have a lot of void space between views;
+  * Add/Scan book: Created container for book info to hide/show one view, not every view;
+  * Add/Scan book: New layout looks more compact and easy to read;
+  * About app: Added paddings and changed text (according to existed TODO);
 * In all Fragments save views to class fields to re-use it instead of call findViewById() each time. Use Butterknife to be more concise;
 * Pisacco library is used to manage images;
 * Updated to latest SDK;
