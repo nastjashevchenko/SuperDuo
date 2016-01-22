@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -16,6 +15,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
@@ -34,10 +34,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence title;
-    public static boolean IS_TABLET = false;
     private BroadcastReceiver messageReceiver;
     public static Book mBook;
     public Fragment mCurrentFragment;
+    private FrameLayout mRightContainer;
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String DELETE_EVENT = "DELETE_EVENT";
@@ -49,12 +49,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IS_TABLET = isTablet();
-        if(IS_TABLET){
-            setContentView(R.layout.activity_main_tablet);
-        }else {
-            setContentView(R.layout.activity_main);
-        }
+        // We do not need this IS_TABLET and resources with different names
+        // We can use separate directories to store layouts for different sizes and system would
+        // decide itself which one to use
+        setContentView(R.layout.activity_main);
+        mRightContainer = (FrameLayout) findViewById(R.id.right_container);
 
         messageReceiver = new MessageReceiver();
         IntentFilter filter = new IntentFilter();
@@ -65,6 +64,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+
         title = getTitle();
 
         // Set up the drawer.
@@ -91,6 +91,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 break;
 
         }
+
+        if (mRightContainer != null) mRightContainer.setVisibility(View.GONE);
 
         fragmentManager.beginTransaction()
                 .replace(R.id.container, nextFragment)
@@ -153,9 +155,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         fragment.setArguments(args);
 
         int id = R.id.container;
-        if(findViewById(R.id.right_container) != null){
+        if(mRightContainer != null){
             id = R.id.right_container;
-            findViewById(R.id.right_container).setVisibility(View.VISIBLE);
+            mRightContainer.setVisibility(View.VISIBLE);
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(id, fragment)
@@ -212,15 +214,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                         getApplicationContext().startService(bookIntent);
                     }
                 });
+                if (mRightContainer != null) mRightContainer.setVisibility(View.GONE);
                 deleted.show();
             }
         }
-    }
-
-    private boolean isTablet() {
-        return (getApplicationContext().getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
     @Override
