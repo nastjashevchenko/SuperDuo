@@ -61,6 +61,15 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
             android:layout_toRightOf="@id/searchButton"/>
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="@dimen/mid_fontsize"
+            android:text="@string/no_books_found"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <LinearLayout

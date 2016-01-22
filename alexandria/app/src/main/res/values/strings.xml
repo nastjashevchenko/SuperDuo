@@ -45,4 +45,5 @@
     <string name="snack_deleted_book">Book is deleted!</string>
     <string name="snack_restored_book">Book is restored!</string>
     <string name="snack_undo">UNDO</string>
+    <string name="no_books_found">No books found</string>
 </resources>

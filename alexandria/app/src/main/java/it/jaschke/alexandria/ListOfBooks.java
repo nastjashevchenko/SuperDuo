@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,12 +30,15 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     private BookListAdapter bookListAdapter;
     private int position = ListView.INVALID_POSITION;
 
+    private boolean isSearch;
+
     @Bind(R.id.listOfBooks) ListView mBookList;
     @Bind(R.id.searchText) EditText mSearchText;
     @Bind(R.id.searchButton) ImageButton mSearchButton;
     @Bind(R.id.no_results) LinearLayout mEmpty;
     @Bind(R.id.books_list) RelativeLayout mListOfBooks;
     @Bind(R.id.clearButton) ImageButton mClearButton;
+    @Bind(R.id.empty) TextView mEmptyResults;
 
     private final int LOADER_ID = 10;
 
@@ -98,6 +102,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         );
 
         mBookList.setAdapter(bookListAdapter);
+        mBookList.setEmptyView(mEmptyResults);
         mBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -123,7 +128,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         final String selection = AlexandriaContract.BookEntry.TITLE +" LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
         String searchString = mSearchText.getText().toString();
 
-        if(searchString.length()>0){
+        isSearch = (searchString.length() > 0);
+        if(isSearch){
             searchString = "%" + searchString + "%";
             return new CursorLoader(
                     getActivity(),
@@ -148,9 +154,10 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         bookListAdapter.swapCursor(data);
-        // If no books in cursor:
+        // If no books in cursor when trying to get all books:
         // hide list and search button/text field and show message and button to quickly add new books
-        setBooksViewVisibility(data == null || data.getCount() == 0);
+        // To separate "no books in DB" from "no books found when user searches" isSearch is used
+        if (!isSearch) setBooksViewVisibility(data == null || data.getCount() == 0);
         if (position != ListView.INVALID_POSITION) {
             mBookList.smoothScrollToPosition(position);
         }
