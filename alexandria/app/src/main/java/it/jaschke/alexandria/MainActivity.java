@@ -155,6 +155,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         int id = R.id.container;
         if(findViewById(R.id.right_container) != null){
             id = R.id.right_container;
+            findViewById(R.id.right_container).setVisibility(View.VISIBLE);
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(id, fragment)

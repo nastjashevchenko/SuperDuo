@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import it.jaschke.alexandria.model.Book;
 import it.jaschke.alexandria.services.BookService;
-import it.jaschke.alexandria.services.DownloadImage;
 
 
 public class AddBook extends Fragment {
@@ -171,8 +171,8 @@ public class AddBook extends Fragment {
         // Delete previous image in case new book doesn't have cover
         mBookCover.setVisibility(View.GONE);
         String imgUrl = book.getImgUrl();
-        if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-            new DownloadImage(mBookCover).execute(imgUrl);
+        if (!imgUrl.equals("")) {
+            Picasso.with(getContext()).load(imgUrl).into(mBookCover);
             mBookCover.setVisibility(View.VISIBLE);
         }
         mCategories.setText(book.getCategoriesStr());

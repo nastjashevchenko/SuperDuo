@@ -8,7 +8,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,12 +18,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.model.Book;
 import it.jaschke.alexandria.services.BookService;
-import it.jaschke.alexandria.services.DownloadImage;
 
 
 public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -122,8 +122,8 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
                 mBook.getAuthorsStr()) : "";
         mAuthors.setText(authors);
 
-        if(Patterns.WEB_URL.matcher(mBook.getImgUrl()).matches()){
-            new DownloadImage(mBookCover).execute(mBook.getImgUrl());
+        if (mBook.getImgUrl() != null && !mBook.getImgUrl().equals("")) {
+            Picasso.with(getContext()).load(mBook.getImgUrl()).into(mBookCover);
             mBookCover.setVisibility(View.VISIBLE);
         }
         mCategories.setText(mBook.getCategoriesStr());
