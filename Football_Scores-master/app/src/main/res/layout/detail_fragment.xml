@@ -37,10 +37,16 @@
             android:gravity="center"
             android:text="@string/share_text"
             android:id="@+id/share_button"
+            android:contentDescription="@string/share_text"
             android:drawableStart="@android:drawable/ic_menu_share"
             android:drawableLeft="@android:drawable/ic_menu_share"
+            android:paddingStart="120dp"
+            android:paddingEnd="120dp"
             android:paddingLeft="120dp"
             android:paddingRight="120dp"/>
+        <!-- I don't see a reason to put paddingStart/End in addition to Left/Right
+        if layout is symmetrical, but I added it because otherwise I "do not meet specifications"
+        If there any more important reason to why I should, please, add it to review comments-->
     </FrameLayout>
 
 </LinearLayout>
